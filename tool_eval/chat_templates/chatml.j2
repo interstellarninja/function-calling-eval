@@ -1,0 +1,7 @@
+{% if not add_generation_prompt is defined %}{% set add_generation_prompt = false %}{% endif %}
+{% for message in messages %}
+{{ '' + message['role'] + '\n' + message['content'] + '' + '\n' }}
+{% endfor %}
+{% if add_generation_prompt %}
+{{ 'assistant\n' }}
+{% endif %}
