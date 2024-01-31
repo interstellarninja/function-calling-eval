@@ -3,6 +3,7 @@ import os
 import re
 import json
 import logging
+import datetime
 import xml.etree.ElementTree as ET
 from logging.handlers import RotatingFileHandler
 
@@ -11,10 +12,13 @@ logging.basicConfig(
     datefmt="%Y-%m-%d:%H:%M:%S",
     level=logging.INFO,
 )
-eval_logger = logging.getLogger("function-calling-eval")
 script_dir = os.path.dirname(os.path.abspath(__file__))
-log_file_path = os.path.join(script_dir, "function-calling-eval.log")
-
+now = datetime.datetime.now()
+log_folder = os.path.join(script_dir, "eval_logs")
+os.makedirs(log_folder, exist_ok=True)
+log_file_path = os.path.join(
+    log_folder, f"function-calling-eval_{now.strftime('%Y-%m-%d_%H-%M-%S')}.log"
+)
 # Use RotatingFileHandler from the logging.handlers module
 file_handler = RotatingFileHandler(log_file_path, maxBytes=0, backupCount=0)
 file_handler.setLevel(logging.INFO)
@@ -22,6 +26,7 @@ file_handler.setLevel(logging.INFO)
 formatter = logging.Formatter("%(asctime)s,%(msecs)03d %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s", datefmt="%Y-%m-%d:%H:%M:%S")
 file_handler.setFormatter(formatter)
 
+eval_logger = logging.getLogger("function-calling-eval")
 eval_logger.addHandler(file_handler)
 
 def get_fewshot_examples(num_fewshot):
@@ -62,10 +67,11 @@ def get_assistant_message(completion, chat_template, eos_token):
     assistant_match = assistant_pattern.search(completion)
     if assistant_match:
         assistant_content = assistant_match.group(1).strip()
+        return assistant_content.rstrip(eos_token)
     else:
         assistant_content = None
         eval_logger.info("No match found for the assistant pattern")
-    return assistant_content.rstrip(eos_token)
+        return assistant_content
 
 def validate_and_extract_tool_calls(assistant_content):
         validation_result = False
