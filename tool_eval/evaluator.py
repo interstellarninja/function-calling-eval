@@ -91,7 +91,12 @@ class ModelEvaluator:
                 else:
                     eval_tool_calls = [eval_completion]
                 
-                all_valid = True        
+                all_valid = True
+                if len(tool_calls) != len(eval_tool_calls):
+                    all_valid = False
+                    eval_logger.info("Number of tool calls doesn't match")
+                    eval_logger.info(f"Expected: {len(eval_tool_calls)} tool calls; Got: {len(tool_calls)}")
+
                 for eval_tool_call in eval_tool_calls:
                     function_found = False
 
@@ -99,7 +104,7 @@ class ModelEvaluator:
                         schema_validation = validate_function_call_schema(tool_call, json.loads(sample['tools']))
                         if not schema_validation:
                             all_valid = False
-                            continue
+                            break
 
                         if tool_call['name'] == eval_tool_call['name']:
                             function_found = True
@@ -108,14 +113,12 @@ class ModelEvaluator:
                             eval_logger.info(f"{tool_call['name']} validation: {result}")
                             if result == "failed":
                                 all_valid = False
-                                break
-                                
+                            break
                     if not function_found:
                         eval_logger.info(f"Function '{eval_tool_call['name']}' not found") 
-                        all_valid = False 
+                        all_valid = False         
             else:
                 eval_logger.info("Function call validation failed")
-                sample['model_completion'] = assistant_message 
                 all_valid = False
             
             if all_valid:
@@ -123,6 +126,7 @@ class ModelEvaluator:
                 eval_logger.info(f"all validations: {sample['result']}")
                 eval_logger.info(f"parsed tool calls:\n{json.dumps(tool_calls, indent=2)}")
             else:
+                sample['model_completion'] = assistant_message
                 eval_logger.info(f"all validations: {sample['result']}")
                 eval_logger.info(f"failed tool calls:\n{assistant_message}")
 
