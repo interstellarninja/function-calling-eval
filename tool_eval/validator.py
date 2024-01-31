@@ -1,27 +1,11 @@
 import json
-from pydantic import BaseModel, ValidationError
-from typing import List, Dict, Literal, Optional
-
+from pydantic import ValidationError
 from utils import eval_logger
-
-class FunctionDefinition(BaseModel):
-    name: str
-    description: Optional[str] = None
-    parameters: Optional[Dict[str, object]] = None
-
-class FunctionSignature(BaseModel):
-    function: FunctionDefinition
-    type: Literal["function"]
-
-class FunctionCall(BaseModel):
-    arguments: dict
-    name: str
+from schema import FunctionCall, FunctionSignature
 
 def validate_function_call_schema(call, signatures):
     try:
-        call = FunctionCall(**call)
-        call_name = call.name
-        call_arguments = call.arguments
+        call_data = FunctionCall(**call)
     except ValidationError as e:
         eval_logger.info(f"Invalid function call: {e}")
         return False
@@ -31,12 +15,12 @@ def validate_function_call_schema(call, signatures):
         try:
             signature_data = FunctionSignature(**signature)
             
-            if signature_data.function.name == call_name:
+            if signature_data.function.name == call_data.name:
 
                 # Validate types in function arguments
                 for arg_name, arg_schema in signature_data.function.parameters.get('properties', {}).items():
-                    if arg_name in call_arguments:
-                        call_arg_value = call_arguments[arg_name]
+                    if arg_name in call_data.arguments:
+                        call_arg_value = call_data.arguments[arg_name]
                         if call_arg_value:
                             try:
                                 validate_argument_type(arg_name, call_arg_value, arg_schema)
@@ -46,7 +30,7 @@ def validate_function_call_schema(call, signatures):
 
                 # Check if all required arguments are present
                 required_arguments = signature_data.function.parameters.get('required', [])
-                result, missing_arguments = check_required_arguments(call_arguments, required_arguments)
+                result, missing_arguments = check_required_arguments(call_data.arguments, required_arguments)
 
                 if not result:
                     eval_logger.info(f"Missing required arguments: {missing_arguments}")
@@ -59,7 +43,7 @@ def validate_function_call_schema(call, signatures):
             return False
 
     # Moved the "No matching function signature found" message here
-    eval_logger.info(f"No matching function signature found for function: {call_name}")
+    eval_logger.info(f"No matching function signature found for function: {call_data.name}")
     return False
 
 def check_required_arguments(call_arguments, required_arguments):
