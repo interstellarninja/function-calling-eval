@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from typing import List, Dict
-from schema import Function
+from typing import Dict
+from schema import FunctionCall
 from utils import (
     get_fewshot_examples
 )
@@ -56,7 +56,7 @@ class PromptManager:
         else:
             examples = None
 
-        schema_json = json.loads(Function.schema_json())
+        schema_json = json.loads(FunctionCall.schema_json())
         #schema = schema_json.get("properties", {})
 
         variables = {
