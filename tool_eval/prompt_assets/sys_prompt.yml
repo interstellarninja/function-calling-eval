@@ -10,8 +10,11 @@ Tools: |
 Examples: |
   Here are some example usage of functions:
   {examples}
-Instructions: |
-  For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags with the following schema:
-  <tool_call>
+Schema: |
+  Use the following pydantic model json schema for each tool call you will make:
   {schema}
+Instructions: |
+  For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags as follows:
+  <tool_call>
+  {{'arguments': <args-dict>, 'name': <function-name>}}
   </tool_call>
