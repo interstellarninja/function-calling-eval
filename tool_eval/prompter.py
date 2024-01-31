@@ -13,6 +13,7 @@ class PromptSchema(BaseModel):
     Objective: str
     Tools: str
     Examples: str
+    Schema: str
     Instructions: str 
 
 class PromptManager:
@@ -25,7 +26,11 @@ class PromptManager:
             if field == "Examples" and variables.get("examples") is None:
                 continue
             formatted_value = value.format(**variables)
-            formatted_prompt += f"{formatted_value}"
+            if field == "Instructions":
+                formatted_prompt += f"{formatted_value}"
+            else:
+                formatted_value = formatted_value.replace("\n", " ")
+                formatted_prompt += f"{formatted_value}"
         return formatted_prompt
 
     def read_yaml_file(self, file_path: str) -> PromptSchema:
@@ -37,6 +42,7 @@ class PromptManager:
             Objective=yaml_content.get('Objective', ''),
             Tools=yaml_content.get('Tools', ''),
             Examples=yaml_content.get('Examples', ''),
+            Schema=yaml_content.get('Schema', ''),
             Instructions=yaml_content.get('Instructions', ''),
         )
         return prompt_schema
@@ -51,12 +57,12 @@ class PromptManager:
             examples = None
 
         schema_json = json.loads(Function.schema_json())
-        schema = schema_json.get("properties", {})
+        #schema = schema_json.get("properties", {})
 
         variables = {
             "tools": sample['tools'],
             "examples": examples,
-            "schema": schema
+            "schema": schema_json
         }
         sys_prompt = self.format_yaml_prompt(prompt_schema, variables)
         sample['system'] = sys_prompt
