@@ -71,6 +71,6 @@ class PromptManager:
                 {'content': sys_prompt, 'role': 'system'}
             ]
         prompt.extend(sample['prompt'])
-        return prompt
+        return prompt, sys_prompt
         
         

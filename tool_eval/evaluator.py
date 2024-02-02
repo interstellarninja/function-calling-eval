@@ -23,7 +23,7 @@ from utils import (
 )
 
 class ModelEvaluator:
-    def __init__(self, model_path, chat_template, load_in_4bit):
+    def __init__(self, model_path, chat_template, load_in_4bit, dpo):
         self.prompter = PromptManager()
         self.bnb_config = None
 
@@ -51,6 +51,9 @@ class ModelEvaluator:
             self.tokenizer.chat_template = get_chat_template(chat_template)
 
         self.eval_results = []
+        if dpo == "True":
+            self.dpo_results = []
+        
         eval_logger.info(self.model.config)
         eval_logger.info(self.model.generation_config)
         eval_logger.info(self.model.parameters)
@@ -60,7 +63,7 @@ class ModelEvaluator:
     def evaluate_model(self, eval_dataset, chat_template, num_fewshot):
 
         for sample in tqdm(eval_dataset, desc="processing samples", unit="sample"):  
-            prompt = self.prompter.generate_prompt(sample, num_fewshot)
+            prompt, sys_prompt = self.prompter.generate_prompt(sample, num_fewshot)
             
             inputs = self.tokenizer.apply_chat_template(
                 prompt,
@@ -130,6 +133,17 @@ class ModelEvaluator:
                 eval_logger.info(f"all validations: {sample['result']}")
                 eval_logger.info(f"failed tool calls:\n{assistant_message}")
 
+                if hasattr(self, 'dpo_results'):
+                    chosen_completion = ""
+                    for tool_call in eval_completion:
+                        chosen_completion += f"<tool_call>\n{tool_call}\n<tool_call>\n"
+                    self.dpo_results.append({
+                        "system": sys_prompt,
+                        "question": sample['prompt'][0]['content'],
+                        "chosen": chosen_completion,
+                        "rejected": assistant_message
+                    })
+
             self.eval_results.append(sample)
 
 if __name__ == "__main__":
@@ -139,6 +153,7 @@ if __name__ == "__main__":
     parser.add_argument("--num_fewshot", type=int, default=None, help="Option to subset eval dataset")
     parser.add_argument("--dataset_path", type=str, default=None, help="Huggingface dataset path")
     parser.add_argument("--load_in_4bit", type=str, default="False", help="Option to load in 4bit with bitsandbytes")
+    parser.add_argument("--dpo", type=str, default="False", help="Option to save dpo dataset")
     args = parser.parse_args()
 
     # load eval dataset
@@ -148,7 +163,7 @@ if __name__ == "__main__":
         eval_dataset = load_dataset("NousResearch/func-calling-eval")['train']
 
     # Create model evaluator instance
-    model_evaluator = ModelEvaluator(args.model_path, args.chat_template, args.load_in_4bit)
+    model_evaluator = ModelEvaluator(args.model_path, args.chat_template, args.load_in_4bit, args.dpo)
 
     # Run the model evaluator
     model_evaluator.evaluate_model(eval_dataset, args.chat_template, args.num_fewshot)
@@ -159,3 +174,7 @@ if __name__ == "__main__":
     results_path = './eval_results.json'
     with open(results_path, 'w') as file:
         json.dump(model_evaluator.eval_results, file)
+
+    dpo_path = './dpo_pairs.json'
+    with open(dpo_path, 'w') as file:
+        json.dump(model_evaluator.dpo_results, file)

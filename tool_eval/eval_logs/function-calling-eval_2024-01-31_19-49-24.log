@@ -1,0 +1,209 @@
+2024-01-31:19:50:05,870 INFO     [evaluator.py:54] StableLMEpochConfig {
+  "_name_or_path": "stabilityai/stablelm-2-zephyr-1_6b",
+  "architectures": [
+    "StableLMEpochForCausalLM"
+  ],
+  "attention_dropout": 0.0,
+  "auto_map": {
+    "AutoConfig": "stabilityai/stablelm-2-zephyr-1_6b--configuration_stablelm_epoch.StableLMEpochConfig",
+    "AutoModelForCausalLM": "stabilityai/stablelm-2-zephyr-1_6b--modeling_stablelm_epoch.StableLMEpochForCausalLM"
+  },
+  "bos_token_id": 100257,
+  "eos_token_id": 100257,
+  "hidden_act": "silu",
+  "hidden_size": 2048,
+  "initializer_range": 0.02,
+  "intermediate_size": 5632,
+  "max_position_embeddings": 4096,
+  "model_type": "stablelm_epoch",
+  "norm_eps": 1e-05,
+  "num_attention_heads": 32,
+  "num_heads": 32,
+  "num_hidden_layers": 24,
+  "num_key_value_heads": 32,
+  "quantization_config": {
+    "bnb_4bit_compute_dtype": "float32",
+    "bnb_4bit_quant_type": "nf4",
+    "bnb_4bit_use_double_quant": true,
+    "llm_int8_enable_fp32_cpu_offload": false,
+    "llm_int8_has_fp16_weight": false,
+    "llm_int8_skip_modules": null,
+    "llm_int8_threshold": 6.0,
+    "load_in_4bit": true,
+    "load_in_8bit": false,
+    "quant_method": "bitsandbytes"
+  },
+  "rope_pct": 0.25,
+  "rope_theta": 10000,
+  "rotary_scaling_factor": 1.0,
+  "tie_word_embeddings": false,
+  "torch_dtype": "bfloat16",
+  "transformers_version": "4.37.0",
+  "use_cache": true,
+  "use_qkv_bias": true,
+  "vocab_size": 100352
+}
+
+2024-01-31:19:50:05,871 INFO     [evaluator.py:55] GenerationConfig {
+  "bos_token_id": 100257,
+  "eos_token_id": 100257
+}
+
+2024-01-31:19:50:05,871 INFO     [evaluator.py:56] <bound method Module.parameters of StableLMEpochForCausalLM(
+  (model): StableLMEpochModel(
+    (embed_tokens): ModulesToSaveWrapper(
+      (original_module): Embedding(100352, 2048)
+      (modules_to_save): ModuleDict(
+        (default): Embedding(100352, 2048)
+      )
+    )
+    (layers): ModuleList(
+      (0-23): 24 x DecoderLayer(
+        (self_attn): FlashAttention2(
+          (q_proj): lora.Linear4bit(
+            (base_layer): Linear4bit(in_features=2048, out_features=2048, bias=True)
+            (lora_dropout): ModuleDict(
+              (default): Dropout(p=0.05, inplace=False)
+            )
+            (lora_A): ModuleDict(
+              (default): Linear(in_features=2048, out_features=32, bias=False)
+            )
+            (lora_B): ModuleDict(
+              (default): Linear(in_features=32, out_features=2048, bias=False)
+            )
+            (lora_embedding_A): ParameterDict()
+            (lora_embedding_B): ParameterDict()
+          )
+          (k_proj): lora.Linear4bit(
+            (base_layer): Linear4bit(in_features=2048, out_features=2048, bias=True)
+            (lora_dropout): ModuleDict(
+              (default): Dropout(p=0.05, inplace=False)
+            )
+            (lora_A): ModuleDict(
+              (default): Linear(in_features=2048, out_features=32, bias=False)
+            )
+            (lora_B): ModuleDict(
+              (default): Linear(in_features=32, out_features=2048, bias=False)
+            )
+            (lora_embedding_A): ParameterDict()
+            (lora_embedding_B): ParameterDict()
+          )
+          (v_proj): lora.Linear4bit(
+            (base_layer): Linear4bit(in_features=2048, out_features=2048, bias=True)
+            (lora_dropout): ModuleDict(
+              (default): Dropout(p=0.05, inplace=False)
+            )
+            (lora_A): ModuleDict(
+              (default): Linear(in_features=2048, out_features=32, bias=False)
+            )
+            (lora_B): ModuleDict(
+              (default): Linear(in_features=32, out_features=2048, bias=False)
+            )
+            (lora_embedding_A): ParameterDict()
+            (lora_embedding_B): ParameterDict()
+          )
+          (o_proj): lora.Linear4bit(
+            (base_layer): Linear4bit(in_features=2048, out_features=2048, bias=False)
+            (lora_dropout): ModuleDict(
+              (default): Dropout(p=0.05, inplace=False)
+            )
+            (lora_A): ModuleDict(
+              (default): Linear(in_features=2048, out_features=32, bias=False)
+            )
+            (lora_B): ModuleDict(
+              (default): Linear(in_features=32, out_features=2048, bias=False)
+            )
+            (lora_embedding_A): ParameterDict()
+            (lora_embedding_B): ParameterDict()
+          )
+          (rotary_emb): RotaryEmbedding()
+        )
+        (mlp): MLP(
+          (gate_proj): lora.Linear4bit(
+            (base_layer): Linear4bit(in_features=2048, out_features=5632, bias=False)
+            (lora_dropout): ModuleDict(
+              (default): Dropout(p=0.05, inplace=False)
+            )
+            (lora_A): ModuleDict(
+              (default): Linear(in_features=2048, out_features=32, bias=False)
+            )
+            (lora_B): ModuleDict(
+              (default): Linear(in_features=32, out_features=5632, bias=False)
+            )
+            (lora_embedding_A): ParameterDict()
+            (lora_embedding_B): ParameterDict()
+          )
+          (up_proj): lora.Linear4bit(
+            (base_layer): Linear4bit(in_features=2048, out_features=5632, bias=False)
+            (lora_dropout): ModuleDict(
+              (default): Dropout(p=0.05, inplace=False)
+            )
+            (lora_A): ModuleDict(
+              (default): Linear(in_features=2048, out_features=32, bias=False)
+            )
+            (lora_B): ModuleDict(
+              (default): Linear(in_features=32, out_features=5632, bias=False)
+            )
+            (lora_embedding_A): ParameterDict()
+            (lora_embedding_B): ParameterDict()
+          )
+          (down_proj): lora.Linear4bit(
+            (base_layer): Linear4bit(in_features=5632, out_features=2048, bias=False)
+            (lora_dropout): ModuleDict(
+              (default): Dropout(p=0.05, inplace=False)
+            )
+            (lora_A): ModuleDict(
+              (default): Linear(in_features=5632, out_features=32, bias=False)
+            )
+            (lora_B): ModuleDict(
+              (default): Linear(in_features=32, out_features=2048, bias=False)
+            )
+            (lora_embedding_A): ParameterDict()
+            (lora_embedding_B): ParameterDict()
+          )
+          (act_fn): SiLU()
+        )
+        (input_layernorm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+        (post_attention_layernorm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+      )
+    )
+    (norm): LayerNorm((2048,), eps=1e-05, elementwise_affine=True)
+  )
+  (lm_head): ModulesToSaveWrapper(
+    (original_module): Linear(in_features=2048, out_features=100352, bias=False)
+    (modules_to_save): ModuleDict(
+      (default): Linear(in_features=2048, out_features=100352, bias=False)
+    )
+  )
+)>
+2024-01-31:19:50:05,878 INFO     [evaluator.py:57] {% for message in messages %}
+{% if message['role'] == 'user' %}
+{{ '<|user|>
+' + message['content'] + eos_token }}
+{% elif message['role'] == 'system' %}
+{{ '<|system|>
+' + message['content'] + eos_token }}
+{% elif message['role'] == 'assistant' %}
+{{ '<|assistant|>
+'  + message['content'] + eos_token }}
+{% endif %}
+{% if loop.last and add_generation_prompt %}
+{{ '<|assistant|>' }}
+{% endif %}
+{% endfor %}
+2024-01-31:19:50:05,878 INFO     [evaluator.py:58] {'bos_token': '<|endoftext|>', 'eos_token': '<|endoftext|>', 'pad_token': '<|endoftext|>'}
+2024-01-31:19:50:09,615 INFO     [evaluator.py:79] model completion with eval prompt:
+<|system|>
+You are a function calling AI model. You are provided with function signatures within <tools></tools> XML tags. You may call one or more functions to assist with the user query. Don't make assumptions about what values to plug into functions. Here are the available tools: <tools> [{"type": "function", "function": {"name": "vt_get_votes_on_ip_address", "description": "This function will retrieve votes on a provided IP address.", "parameters": {"type": "object", "properties": {"ip": {"type": "string", "description": "ip address"}}, "required": ["ip"]}}}, {"type": "function", "function": {"name": "vt_get_comments_on_domain", "description": "This function will retrieve comments on a specified domain.", "parameters": {"type": "object", "properties": {"domain": {"type": "string", "description": "Domain name"}, "x-apikey": {"type": "string", "description": "Your API key"}, "limit": {"type": "integer", "description": "Maximum number of comments to retrieve"}, "cursor": {"type": "string", "description": "Continuation cursor"}}, "required": ["domain", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_object_descriptors_related_to_domain", "description": "This specifically returns related object's IDs (and context attributes, if any). Please note that this will not return all attributes. This will return objects relating to a domain.", "parameters": {"type": "object", "properties": {"domain": {"type": "string", "description": "Domain name"}, "relationship": {"type": "string", "description": "Relationship name (see table)"}, "x-apikey": {"type": "string", "description": "Your API key"}, "limit": {"type": "integer", "description": "Maximum number of comments to retrieve"}, "cursor": {"type": "string", "description": "Continuation cursor"}}, "required": ["domain", "relationship", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_objects_related_to_domain", "description": "Objects are a key concept in the VirusTotal API. Each object has an identifier and a type.", "parameters": {"type": "object", "properties": {"domain": {"type": "string", "description": "Domain name"}, "relationship": {"type": "string", "description": "Relationship name (see table)"}, "x-apikey": {"type": "string", "description": "Your API key"}, "limit": {"type": "integer", "description": "Maximum number of comments to retrieve"}, "cursor": {"type": "string", "description": "Continuation cursor"}}, "required": ["domain", "relationship", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_object_descriptors_related_to_ip_address", "description": "This specifically returns related object's IDs (and context attributes, if any). Please note that this will not return all attributes.", "parameters": {"type": "object", "properties": {"ip": {"type": "string", "description": "IP address"}, "relationship": {"type": "string", "description": "Relationship name (see table)"}, "x-apikey": {"type": "string", "description": "Your API key"}, "limit": {"type": "integer", "description": "Maximum number of comments to retrieve"}, "cursor": {"type": "string", "description": "Continuation cursor"}}, "required": ["ip", "relationship", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_add_comment_to_ip_address", "description": "With this function you can post a comment for a given IP address. The body for the POST request must be the JSON representation of a comment object. Notice however that you don't need to provide an ID for the object, as they are automatically generated for new comments.", "parameters": {"type": "object", "properties": {"ip": {"type": "string", "description": "IP address"}, "data": {"type": "object", "description": "A comment object"}, "x-apikey": {"type": "string", "description": "Your API key"}}, "required": ["ip", "data", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_comments_on_ip_address", "description": "Retrieves the comments on a provided IP address. Returns a list of Comment objects.", "parameters": {"type": "object", "properties": {"ip": {"type": "string", "description": "IP address"}, "x-apikey": {"type": "string", "description": "Your API key"}, "limit": {"type": "integer", "description": "Maximum number of comments to retrieve"}, "cursor": {"type": "string", "description": "Continuation cursor"}}, "required": ["ip", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_domain_report", "description": "Retrieves a domain report. These reports contain information regarding the domain itself that VirusTotal has collected.", "parameters": {"type": "object", "properties": {"domain": {"type": "string", "description": "Domain name"}, "x-apikey": {"type": "string", "description": "Your API key"}}, "required": ["domain", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_add_votes_to_ip_address", "description": "With this function you can post a vote for a given file. The body for the POST request must be the JSON representation of a vote object. Note however that you don't need to provide an ID for the object, as they are automatically generated for new votes. The verdict attribute must have be either harmless or malicious.", "parameters": {"type": "object", "properties": {"ip": {"type": "string", "description": "IP address"}, "data": {"type": "object", "description": "Vote object"}, "x-apikey": {"type": "string", "description": "Your API key"}}, "required": ["ip", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_ip_address_report", "description": "Retrieve an IP address report. These reports condense all of the recent activity that VirusTotal has seen for the resource under consideration, as well as contextual information about it.", "parameters": {"type": "object", "properties": {"ip": {"type": "string", "description": "IP address"}, "x-apikey": {"type": "string", "description": "Your API key"}}, "required": ["ip", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_objects_related_to_ip_address", "description": "IP addresses have number of relationships to other objects. This returns ALL objects that fit the relationship.", "parameters": {"type": "object", "properties": {"ip": {"type": "string", "description": "IP address"}, "relationship": {"type": "string", "description": "Relationship name (see the list of items from above)"}, "x-apikey": {"type": "string", "description": "Your API key"}, "limit": {"type": "integer", "description": "Maximum number of comments to retrieve"}, "cursor": {"type": "string", "description": "Continuation cursor"}}, "required": ["ip", "relationship", "x-apikey"]}}}, {"type": "function", "function": {"name": "vt_get_dns_resolution_object", "description": "This endpoint retrieves a Resolution object by its ID. A resolution object ID is made by appending the IP and the domain it resolves to together.", "parameters": {"type": "object", "properties": {"id": {"type": "string", "description": "Resolution object ID"}, "x-apikey": {"type": "string", "description": "Your API key"}}, "required": ["id", "x-apikey"]}}}] </tools> Use the following pydantic model json schema for each tool call you will make: {'title': 'FunctionCall', 'type': 'object', 'properties': {'arguments': {'title': 'Arguments', 'type': 'object'}, 'name': {'title': 'Name', 'type': 'string'}}, 'required': ['arguments', 'name']} For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags as follows:
+<tool_call>
+{'arguments': <args-dict>, 'name': <function-name>}
+</tool_call><|endoftext|>
+<|user|>
+Using 'theta_key', fetch comments for domain instagram.com. Also, set a limit of 25.<|endoftext|>
+<|assistant|>
+<tool_call>
+{'arguments': {'domain': 'instagram.com', 'x-apikey': 'theta_key'}, 'name': 'vt_get_comments_on_domain'}
+</tool_call>
+</code></code>
+<|endoftext|>
+2024-01-31:19:50:09,615 INFO     [utils.py:70] No match found for the assistant pattern
