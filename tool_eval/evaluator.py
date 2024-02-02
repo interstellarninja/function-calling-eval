@@ -175,6 +175,7 @@ if __name__ == "__main__":
     with open(results_path, 'w') as file:
         json.dump(model_evaluator.eval_results, file)
 
-    dpo_path = './dpo_pairs.json'
-    with open(dpo_path, 'w') as file:
-        json.dump(model_evaluator.dpo_results, file)
+    if args.dpo == "True":
+        dpo_path = './dpo_pairs.json'
+        with open(dpo_path, 'w') as file:
+            json.dump(model_evaluator.dpo_results, file)
