@@ -40,7 +40,7 @@ def get_fewshot_examples(num_fewshot):
 
 def get_chat_template(chat_template):
     """read chat template from jinja file"""
-    template_path = os.path.join(script_dir, 'templates', chat_template)
+    template_path = os.path.join(script_dir, 'chat_templates', f"{chat_template}.j2")
 
     if not os.path.exists(template_path):
         eval_logger.error(f"Template file not found: {chat_template}")
