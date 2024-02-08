@@ -83,21 +83,22 @@ def validate_and_extract_tool_calls(assistant_content):
 
             # extract JSON data
             for element in root.findall(".//tool_call"):
-                json_text = element.text.strip()
+                if element.text is not None:
+                    json_text = element.text.strip()
 
-                try:
-                # Prioritize json.loads for better error handling
-                    json_data = json.loads(json_text)
-                except json.JSONDecodeError as json_err:
                     try:
-                        # Fallback to ast.literal_eval if json.loads fails
-                        json_data = ast.literal_eval(json_text)
-                    except (SyntaxError, ValueError) as eval_err:
-                        eval_logger.error("JSON parsing failed with both json.loads and ast.literal_eval:")
-                        eval_logger.error("- JSON Decode Error: %s", json_err)
-                        eval_logger.error("- Fallback Syntax/Value Error: %s", eval_err)
-                        eval_logger.error("- Problematic JSON text: %s", json_text)
-                        continue
+                    # Prioritize json.loads for better error handling
+                        json_data = json.loads(json_text)
+                    except json.JSONDecodeError as json_err:
+                        try:
+                            # Fallback to ast.literal_eval if json.loads fails
+                            json_data = ast.literal_eval(json_text)
+                        except (SyntaxError, ValueError) as eval_err:
+                            eval_logger.error("JSON parsing failed with both json.loads and ast.literal_eval:")
+                            eval_logger.error("- JSON Decode Error: %s", json_err)
+                            eval_logger.error("- Fallback Syntax/Value Error: %s", eval_err)
+                            eval_logger.error("- Problematic JSON text: %s", json_text)
+                            continue
 
                 tool_calls.append(json_data)
                 validation_result = True
