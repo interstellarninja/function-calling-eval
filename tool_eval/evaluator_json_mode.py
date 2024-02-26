@@ -79,26 +79,25 @@ class ModelEvaluator:
             eval_logger.info(f"model completion with eval prompt:\n{completion}")
 
             assistant_message = get_assistant_message(completion, chat_template, self.tokenizer.eos_token)
-            validation, json_object = validate_json_data(assistant_message, json.loads(sample['schema']))
 
             sample['model_completion'] = ""
             sample['result'] = "failed"
 
-            if validation:
-                all_valid = True
-                result = validate_json_completion(json_object, json.loads(sample['completion']))
-                if result == "failed":
-                    eval_logger.info("Json completion validation failed")
-                    all_valid = False      
-            if all_valid:
-                sample['result'] = "passed"
-                sample['model_completion'] = assistant_message
-                eval_logger.info(f"all validations: {sample['result']}")
-                eval_logger.info(f"parsed json object:\n{json.dumps(json_object, indent=2)}")
+            if assistant_message is not None:
+                validation, json_object = validate_json_data(assistant_message, json.loads(sample['schema']))
+                if validation:
+                    result = validate_json_completion(json_object, json.loads(sample['completion']))
+                    if result == "failed":
+                        sample['model_completion'] = assistant_message
+                        eval_logger.info("Json completion validation failed")
+                    else:
+                        sample['result'] = "passed"
+                        sample['model_completion'] = json_object
+                        eval_logger.info(f"all validations: {sample['result']}")
+                        eval_logger.info(f"parsed json object:\n{json.dumps(json_object, indent=2)}")
             else:
                 sample['model_completion'] = assistant_message
-                eval_logger.info(f"all validations: {sample['result']}")
-                eval_logger.info(f"failed json completion:\n{assistant_message}")
+                eval_logger.info("all validations: failed")
 
                 if hasattr(self, 'dpo_results'):
                     self.dpo_results.append({
