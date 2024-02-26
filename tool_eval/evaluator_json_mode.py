@@ -84,20 +84,21 @@ class ModelEvaluator:
             sample['result'] = "failed"
 
             if assistant_message is not None:
+                sample['model_completion'] = assistant_message
                 validation, json_object = validate_json_data(assistant_message, json.loads(sample['schema']))
                 if validation:
                     result = validate_json_completion(json_object, json.loads(sample['completion']))
                     if result == "failed":
-                        sample['model_completion'] = assistant_message
                         eval_logger.info("Json completion validation failed")
                     else:
                         sample['result'] = "passed"
                         sample['model_completion'] = json_object
-                        eval_logger.info(f"all validations: {sample['result']}")
+                        eval_logger.info(f"all validations passed")
                         eval_logger.info(f"parsed json object:\n{json.dumps(json_object, indent=2)}")
-            else:
-                sample['model_completion'] = assistant_message
-                eval_logger.info("all validations: failed")
+            
+            if sample['result'] == "failed":
+                eval_logger.info("all validations failed")
+                eval_logger.info(f"failed assistant message:\n{sample['model_completion']}")
 
                 if hasattr(self, 'dpo_results'):
                     self.dpo_results.append({
