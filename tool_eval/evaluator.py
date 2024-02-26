@@ -161,7 +161,7 @@ if __name__ == "__main__":
     if args.dataset_path:
         eval_dataset = load_dataset(args.dataset_path)["train"]
     else:
-        eval_dataset = load_dataset("NousResearch/func-calling-eval")['train']
+        eval_dataset = load_dataset("NousResearch/func-calling-eval-glaive")['train']
 
     # Create model evaluator instance
     model_evaluator = ModelEvaluator(args.model_path, args.chat_template, args.load_in_4bit, args.dpo)
