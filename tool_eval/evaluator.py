@@ -171,6 +171,7 @@ if __name__ == "__main__":
 
     # Calculate and print pass rate
     pass_rate = calculate_pass_rate(model_evaluator.eval_results)
+    eval_logger.info(f"function-calling eval (pass@1): {pass_rate}")
 
     results_path = './eval_results.json'
     with open(results_path, 'w') as file:

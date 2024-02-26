@@ -124,5 +124,4 @@ def calculate_pass_rate(eval_results):
     eval_logger.info("Number of eval tests failed: %s", len(eval_results) - passed_count)
 
     pass_rate = passed_count / len(eval_results)
-    eval_logger.info(f"function-calling eval (pass@1): {pass_rate}")
     return pass_rate
