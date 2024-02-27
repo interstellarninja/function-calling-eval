@@ -61,12 +61,16 @@ def get_assistant_message(completion, chat_template, eos_token):
         assistant_pattern = re.compile(r'<\|assistant\|>((?:(?!<\|assistant\|>).)*)$', re.DOTALL)
     elif chat_template == "chatml":
         assistant_pattern = re.compile(r'<\\|im_start\\|>\s*assistant((?:(?!<\\|im_start\\|>\s*assistant).)*)$', re.DOTALL)
+    elif chat_template == "vicuna":
+        assistant_pattern = re.compile(r'ASSISTANT:\s*((?:(?!ASSISTANT:).)*)$', re.DOTALL)
     else:
         raise NotImplementedError(f"Handling for chat_template '{chat_template}' is not implemented.")
     
     assistant_match = assistant_pattern.search(completion)
     if assistant_match:
         assistant_content = assistant_match.group(1).strip()
+        if chat_template == "vicuna":
+            eos_token = f"</s>{eos_token}"
         return assistant_content.replace(eos_token, "")
     else:
         assistant_content = None
