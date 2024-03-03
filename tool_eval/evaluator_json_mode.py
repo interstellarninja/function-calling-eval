@@ -136,11 +136,11 @@ if __name__ == "__main__":
     pass_rate = calculate_pass_rate(model_evaluator.eval_results)
     eval_logger.info(f"json-mode eval (pass@1): {pass_rate}")
 
-    results_path = './eval_results_json_mode.json'
+    results_path = './json_mode_eval_results.json'
     with open(results_path, 'w') as file:
         json.dump(model_evaluator.eval_results, file)
 
     if args.dpo == "True":
-        dpo_path = './dpo_pairs.json'
+        dpo_path = './json_mode_dpo_pairs.json'
         with open(dpo_path, 'w') as file:
             json.dump(model_evaluator.dpo_results, file)

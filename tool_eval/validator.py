@@ -103,7 +103,7 @@ def validate_json_data(json_object, json_schema):
             except (SyntaxError, ValueError) as e:
                 error_message = f"JSON decoding error: {e}"
                 # Return early if both json.loads and ast.literal_eval fail
-                print("Validation failed for JSON data:", error_message)
+                eval_logger.info(f"Validation failed for JSON data: {error_message}")
                 return valid, result_json
 
         # Validate each item in the list against schema if it's a list
@@ -111,14 +111,14 @@ def validate_json_data(json_object, json_schema):
             for index, item in enumerate(result_json):
                 try:
                     validate(instance=item, schema=json_schema)
-                    print(f"Item {index+1} is valid against the schema.")
+                    eval_logger.info(f"Item {index+1} is valid against the schema.")
                 except ValidationError as e:
                     error_message = f"Validation failed for item {index+1}: {e}"
                     break
         else:  # Default to validation without list
             try:
                 validate(instance=result_json, schema=json_schema)
-                #print("JSON object is valid against the schema.")
+                #eval_logger.info("JSON object is valid against the schema.")
             except ValidationError as e:
                 error_message = f"Validation failed: {e}"
     except Exception as e:
@@ -126,28 +126,32 @@ def validate_json_data(json_object, json_schema):
 
     if error_message is None:
         valid = True
-        print("JSON data is valid against the schema.")
+        eval_logger.info("JSON data is valid against the schema.")
     else:
-        print("Validation failed for JSON data:", error_message)
+        eval_logger.info(f"Validation failed for JSON data: {error_message}")
 
     return valid, result_json
 
 
 def validate_json_completion(json_obj1, json_obj2):
     # Check if keys match
-    if set(json_obj1.keys()) != set(json_obj2.keys()):
-        print("Keys don't match:")
-        print("Expected:", set(json_obj1.keys()))
-        print("Got:", set(json_obj2.keys()))
-        return "failed"
-
-    # Check if values match
-    for key in json_obj1.keys():
-        if json_obj1[key] != json_obj2[key]:
-            print("Values don't match for key '{}':".format(key))
-            print("Expected:", json_obj1[key])
-            print("Got:", json_obj2[key])
+    try:
+        if set(json_obj1.keys()) != set(json_obj2.keys()):
+            eval_logger.info("Keys don't match:")
+            eval_logger.info(f"Expected: {set(json_obj1.keys())}")
+            eval_logger.info(f"Got: {set(json_obj2.keys())}")
             return "failed"
+
+        # Check if values match
+        for key in json_obj1.keys():
+            if json_obj1[key] != json_obj2[key]:
+                eval_logger.info(f"Values don't match for key '{key}'")
+                eval_logger.info(f"Expected: {json_obj1[key]}")
+                eval_logger.info(f"Got: {json_obj2[key]}")
+                return "failed"
+    except Exception as e:
+        eval_logger.info(f"Exception occured: {e}")
+        return "failed"
 
     # If keys and values match, result remains "passed"
     return "passed"

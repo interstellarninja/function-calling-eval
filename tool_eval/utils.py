@@ -69,8 +69,8 @@ def get_assistant_message(completion, chat_template, eos_token):
     assistant_match = assistant_pattern.search(completion)
     if assistant_match:
         assistant_content = assistant_match.group(1).strip()
-        if chat_template == "vicuna":
-            eos_token = f"</s>{eos_token}"
+        #if chat_template == "vicuna":
+        #    eos_token = f"</s>{eos_token}"
         return assistant_content.replace(eos_token, "")
     else:
         assistant_content = None
