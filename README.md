@@ -1,9 +1,7 @@
-# function-calling-eval
+# Function-calling & JSON-mode Evaluation
 A framework for evaluating function calls made by LLMs
 
-# Function Calling & JSON output Evaluation
-
-This script evaluates the performance of a language model on a function calling task using the Fireworks-AI dataset. It preprocesses prompts, runs model completions, parses the function calls in the completions, validates the function calls, and calculates the pass rate.
+This script evaluates the performance of a language model on a function calling and JSON output tasks. It preprocesses prompts, runs model completions, parses the function calls/json objects in the completions, validates the function calls/json objects, and calculates the pass rate.
 
 ## Usage
 
@@ -25,7 +23,7 @@ pip -r requirements.txt
 - `--num_fewshot`: Option to subset the evaluation dataset (default: `None`).
 - `--dataset_path`: Path to the Hugging Face dataset (default: function-calling: `"NousResearch/func-calling-eval"` & json-mode: `"NousResearch/json-mode-eval"`).
 - `--load_in_4bit`: Option to load the model in 4-bit mode with `bitsandbytes` (default: `"False"`).
-- `--dpo`: Option to save the dataset for diversity-promoting oversampling (DPO) (default: `"False"`).
+- `--dpo`: Option to save the dataset for DPO (default: `"False"`).
 
 ## Example
 
