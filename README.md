@@ -14,6 +14,7 @@ cd function-calling-eval/tool_eval
 2. Install the required dependencies:
 ```bash
 pip -r requirements.txt
+MAX_JOBS=4 pip install flash-attn --no-build-isolation
 ```
 
 ### Arguments
