@@ -5,3 +5,4 @@ transformers @ git+https://github.com/huggingface/transformers.git@ae49b218c3d71
 bitsandbytes>=0.41.1
 accelerate==0.27.2
 ninja==1.11.1.1
+pydantic==2.7.4
