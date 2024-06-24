@@ -20,23 +20,32 @@ from utils import (
 )
 
 class ModelEvaluator:
-    def __init__(self, model_path, chat_template, load_in_4bit, dpo):
+    def __init__(self, model_path, chat_template, load_in_4bit, flash_attn, dpo):
         self.bnb_config = None
 
-        if load_in_4bit == "True":
+        if load_in_4bit:
             self.bnb_config = BitsAndBytesConfig(
                 load_in_4bit=True,
                 bnb_4bit_quant_type="nf4",
                 bnb_4bit_use_double_quant=True,
             )
+
+        # Prepare model loading arguments
+        model_args = {
+            "trust_remote_code": True,
+            "return_dict": True,
+            "quantization_config": self.bnb_config,
+            "torch_dtype": torch.bfloat16,
+            "device_map": "auto",
+        }
+
+        # Conditionally add attn_implementation if flash_attn is True
+        if flash_attn:
+            model_args["attn_implementation"] = "flash_attention_2"
+
         self.model = AutoModelForCausalLM.from_pretrained(
             model_path,
-            trust_remote_code=True,
-            return_dict=True,
-            quantization_config=self.bnb_config,
-            torch_dtype=torch.bfloat16,
-            attn_implementation="flash_attention_2",
-            device_map="auto",
+            **model_args
         )
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
@@ -48,7 +57,7 @@ class ModelEvaluator:
             self.tokenizer.chat_template = get_chat_template(chat_template)
 
         self.eval_results = []
-        if dpo == "True":
+        if dpo:
             self.dpo_results = []
         
         eval_logger.info(self.model.config)
@@ -116,8 +125,9 @@ if __name__ == "__main__":
     parser.add_argument("--chat_template", type=str, default="chatml", help="Chat template for prompt formatting")
     parser.add_argument("--num_fewshot", type=int, default=None, help="Option to subset eval dataset")
     parser.add_argument("--dataset_path", type=str, default=None, help="Huggingface dataset path")
-    parser.add_argument("--load_in_4bit", type=str, default="False", help="Option to load in 4bit with bitsandbytes")
-    parser.add_argument("--dpo", type=str, default="False", help="Option to save dpo dataset")
+    parser.add_argument("--flash_attn", type=bool, default=False, help="weather to use flash attention; requires installing flash-attn")
+    parser.add_argument("--load_in_4bit", type=str, default=False, help="Option to load in 4bit with bitsandbytes")
+    parser.add_argument("--dpo", type=str, default=False, help="Option to save dpo dataset")
     args = parser.parse_args()
 
     # load eval dataset
@@ -127,7 +137,7 @@ if __name__ == "__main__":
         eval_dataset = load_dataset("NousResearch/json-mode-eval")['train']
 
     # Create model evaluator instance
-    model_evaluator = ModelEvaluator(args.model_path, args.chat_template, args.load_in_4bit, args.dpo)
+    model_evaluator = ModelEvaluator(args.model_path, args.chat_template, args.load_in_4bit, args.flash_attn, args.dpo)
 
     # Run the model evaluator
     model_evaluator.evaluate_model(eval_dataset, args.chat_template, args.num_fewshot)
@@ -140,7 +150,7 @@ if __name__ == "__main__":
     with open(results_path, 'w') as file:
         json.dump(model_evaluator.eval_results, file)
 
-    if args.dpo == "True":
+    if args.dpo:
         dpo_path = './json_mode_dpo_pairs.json'
         with open(dpo_path, 'w') as file:
             json.dump(model_evaluator.dpo_results, file)
