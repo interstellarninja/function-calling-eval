@@ -25,13 +25,15 @@ class PromptManager:
         for field, value in prompt_schema.dict().items():
             if field == "Examples" and variables.get("examples") is None:
                 continue
+            
             formatted_value = value.format(**variables)
-            if field == "Instructions":
-                formatted_prompt += f"{formatted_value}"
-            else:
-                formatted_value = formatted_value.replace("\n", " ")
-                formatted_prompt += f"{formatted_value}"
-        return formatted_prompt
+            
+            # Add Markdown header
+            #formatted_prompt += f"# {field}\n"
+            formatted_prompt += formatted_value
+            #formatted_prompt += "\n"
+        
+        return formatted_prompt.strip()
 
     def read_yaml_file(self, file_path: str) -> PromptSchema:
         with open(file_path, 'r') as file:
