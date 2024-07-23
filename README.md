@@ -1,5 +1,5 @@
 # Function-calling & JSON-mode Evaluation
-A framework for evaluating function calls and json output by LLMs.
+A framework for evaluating function calls and json output by LLMs using Hermes Tool Call and JSON-mode format.
 
 This script evaluates the performance of a language model on a function calling and JSON output tasks. It preprocesses prompts, runs model completions, parses the function calls/json objects in the completions, validates the function calls/json objects, and calculates the pass rate.
 
