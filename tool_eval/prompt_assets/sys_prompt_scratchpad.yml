@@ -33,5 +33,5 @@ Instructions: |
   Reflection: <evaluate query-tool relevance and required parameters when tools called; analyze overall task status when observations made>
   </scratch_pad>
   <tool_call>
-  {{'arguments': <args-dict>, 'name': <function-name>}}
+  {{"name": <function-name>, "arguments": <args-dict>}}
   </tool_call>

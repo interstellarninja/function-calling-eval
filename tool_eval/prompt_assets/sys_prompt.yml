@@ -20,5 +20,5 @@ Schema: |
 Instructions: |
   For each function call return a json object with function name and arguments within <tool_call></tool_call> XML tags as follows:
   <tool_call>
-  {{'arguments': <args-dict>, 'name': <function-name>}}
+  {{"name": <function-name>, "arguments": <args-dict>}}
   </tool_call>
