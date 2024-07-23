@@ -19,7 +19,7 @@ from utils import (
     get_assistant_message,
     get_chat_template,
     validate_tool_calls,
-    validate_and_extract_tool_calls
+    validate_and_extract_tool_calls_regex
 )
 
 class ModelEvaluator:
@@ -93,7 +93,7 @@ class ModelEvaluator:
             eval_logger.info(f"model completion with eval prompt:\n{completion}")
 
             assistant_message = get_assistant_message(completion, chat_template, self.tokenizer.eos_token)
-            validation, tool_calls = validate_and_extract_tool_calls(assistant_message)
+            validation, tool_calls = validate_and_extract_tool_calls_regex(assistant_message)
 
             sample['model_completion'] = []
             sample['result'] = "failed"

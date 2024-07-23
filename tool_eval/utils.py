@@ -77,6 +77,29 @@ def get_assistant_message(completion, chat_template, eos_token):
         eval_logger.info("No match found for the assistant pattern")
         return assistant_content
 
+def validate_and_extract_tool_calls_regex(assistant_content):
+    validation_result = False
+    tool_calls = []
+    
+    # Regular expression to find content within <tool_call> tags
+    tool_call_pattern = re.compile(r'<tool_call>(.*?)</tool_call>', re.DOTALL)
+    
+    # Find all matches
+    matches = tool_call_pattern.findall(assistant_content)
+    
+    for match in matches:
+        try:
+            # Try to parse the content as JSON
+            json_data = json.loads(match.strip())
+            tool_calls.append(json_data)
+            validation_result = True
+        except json.JSONDecodeError as json_err:
+            eval_logger.error("JSON parsing failed:")
+            eval_logger.error("- JSON Decode Error: %s", json_err)
+            eval_logger.error("- Problematic JSON text: %s", match.strip())
+    
+    return validation_result, tool_calls
+
 def validate_and_extract_tool_calls(assistant_content):
         validation_result = False
         tool_calls = []
