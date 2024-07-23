@@ -23,7 +23,14 @@ Instructions: |
   Each function call should be enclosed within <tool_call> </tool_call> XML tags. Please use <scratch_pad> </scratch_pad> XML tags to record your reasoning and planning before you call the functions.
   Example:
   <scratch_pad>
-  {{step-by-step reasoning and plan in bullet points}}
+  Goal: <state task assigned by user>
+  Actions: 
+  <if tool calls need to be generated:>
+  - {{result_var_name1}} = functions.{{function_name1}}({{param1}}={{value1}},...)
+  - {{result_var_name2, result_var_name3}} = ...
+  <if no tool call needs to be generated:> None
+  Observation: <set observation 'None' with tool calls; plan final tools results summary when provided>
+  Reflection: <evaluate query-tool relevance and required parameters when tools called; analyze overall task status when observations made>
   </scratch_pad>
   <tool_call>
   {{'arguments': <args-dict>, 'name': <function-name>}}
