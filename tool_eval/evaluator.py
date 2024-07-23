@@ -71,10 +71,10 @@ class ModelEvaluator:
         eval_logger.info(self.tokenizer.chat_template)
         eval_logger.info(self.tokenizer.special_tokens_map)
 
-    def evaluate_model(self, eval_dataset, chat_template, num_fewshot):
+    def evaluate_model(self, eval_dataset, chat_template, scratch_pad, num_fewshot):
 
         for sample in tqdm(eval_dataset, desc="processing samples", unit="sample"):  
-            prompt, sys_prompt = self.prompter.generate_prompt(sample, num_fewshot)
+            prompt, sys_prompt = self.prompter.generate_prompt(sample, scratch_pad, num_fewshot)
             
             inputs = self.tokenizer.apply_chat_template(
                 prompt,
@@ -165,6 +165,7 @@ if __name__ == "__main__":
     parser.add_argument("--dataset_path", type=str, default=None, help="Huggingface dataset path")
     parser.add_argument("--load_in_4bit", type=bool, default=False, help="Option to load in 4bit with bitsandbytes")
     parser.add_argument("--flash_attn", type=bool, default=False, help="weather to use flash attention; requires installing flash-attn")
+    parser.add_argument("--scratch_pad", type=bool, default=False, help="whether to use scratchpad reasoning")
     parser.add_argument("--dpo", type=bool, default=False, help="Option to save dpo dataset")
     args = parser.parse_args()
 
@@ -178,7 +179,7 @@ if __name__ == "__main__":
     model_evaluator = ModelEvaluator(args.model_path, args.chat_template, args.load_in_4bit, args.flash_attn, args.dpo)
 
     # Run the model evaluator
-    model_evaluator.evaluate_model(eval_dataset, args.chat_template, args.num_fewshot)
+    model_evaluator.evaluate_model(eval_dataset, args.chat_template, args.scratch_pad, args.num_fewshot)
 
     # Calculate and print pass rate
     pass_rate = calculate_pass_rate(model_evaluator.eval_results)
