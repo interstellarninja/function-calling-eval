@@ -49,8 +49,11 @@ class PromptManager:
         )
         return prompt_schema
     
-    def generate_prompt(self, sample, num_fewshot=None):
-        prompt_path = os.path.join(self.script_dir, 'prompt_assets', 'sys_prompt.yml')
+    def generate_prompt(self, sample, scratch_pad=False, num_fewshot=None):
+        if scratch_pad:
+            prompt_path = os.path.join(self.script_dir, 'prompt_assets', 'sys_prompt_scratchpad.yml')
+        else:
+            prompt_path = os.path.join(self.script_dir, 'prompt_assets', 'sys_prompt.yml')
         prompt_schema = self.read_yaml_file(prompt_path)
 
         if num_fewshot is not None:
